@@ -198,6 +198,12 @@
         let currentView = 'week';
         let currentDate = new Date();
         let events = <%- JSON.stringify(events || []) %>;
+        events = events.map(event => {
+            if (event && event.event_date) {
+                event.event_date = event.event_date.substring(0, 10);
+            }
+            return event;
+        });
         let draggedEvent = null;
         let draggedEventOriginal = null;
 
