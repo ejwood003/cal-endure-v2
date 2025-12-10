@@ -574,24 +574,32 @@
                     endTime = `${String(hours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
                 }
 
+                const params = new URLSearchParams();
+                params.append('title', event.title || '');
+                params.append('eventDate', newDate);
+                params.append('startTime', newTime);
+                params.append('endTime', endTime || newTime);
+                params.append('eventType', event.event_type || 'Spiritual');
+                params.append('location', event.location || '');
+                params.append('notes', event.notes || '');
+                params.append('color', event.color || '#0d3b66');
+                params.append('status', event.status || 'pending');
+                if (event.goal_id) {
+                    params.append('goalId', event.goal_id);
+                }
+                const contactIds = Array.isArray(event.contact_ids) ? event.contact_ids.filter(id => id !== null) : [];
+                contactIds.forEach(id => params.append('contacts', id));
+
                 const response = await fetch(`/calendar/update/${eventId}`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                    body: new URLSearchParams({
-                        title: event.title,
-                        eventDate: newDate,
-                        startTime: newTime,
-                        endTime: endTime || newTime,
-                        eventType: event.event_type || 'Spiritual',
-                        location: event.location || '',
-                        notes: event.notes || ''
-                    })
+                    body: params
                 });
 
                 if (response.ok) {
                     event.event_date = newDate;
                     event.start_time = newTime;
-                    event.end_time = endTime;
+                    event.end_time = endTime || newTime;
                     renderCurrentView();
                 }
             } catch (error) {

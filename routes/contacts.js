@@ -135,8 +135,7 @@ router.get('/:id', async (req, res) => {
             .first();
 
         if (!contact) {
-            req.session.error = 'Contact not found';
-            return res.redirect('/contacts');
+            return res.status(404).json({ error: 'Contact not found' });
         }
 
         const events = await db('events as e')

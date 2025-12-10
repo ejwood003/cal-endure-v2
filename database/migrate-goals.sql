@@ -33,6 +33,9 @@ ALTER TABLE events ADD COLUMN IF NOT EXISTS goal_id INT REFERENCES goals(goal_id
 -- Add status column to events table if it doesn't exist
 ALTER TABLE events ADD COLUMN IF NOT EXISTS status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'completed', 'missed', 'cancelled'));
 
+-- Add color column to events table if it doesn't exist
+ALTER TABLE events ADD COLUMN IF NOT EXISTS color VARCHAR(20) DEFAULT '#0d3b66';
+
 -- Create new indexes
 CREATE INDEX IF NOT EXISTS idx_events_goal_id ON events(goal_id);
 CREATE INDEX IF NOT EXISTS idx_events_status ON events(status);

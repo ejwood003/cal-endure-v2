@@ -49,6 +49,7 @@ CREATE TABLE events (
     start_time TIME NOT NULL,
     end_time TIME,
     event_type VARCHAR(50),
+    color VARCHAR(20) DEFAULT '#0d3b66',
     location VARCHAR(200),
     notes TEXT,
     reminder BOOLEAN DEFAULT FALSE,

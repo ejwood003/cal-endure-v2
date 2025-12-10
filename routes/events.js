@@ -29,7 +29,8 @@ router.get('/', async (req, res) => {
                                'last_name', c.last_name
                            )
                        END
-                   ) FILTER (WHERE c.contact_id IS NOT NULL) as contacts
+                   ) FILTER (WHERE c.contact_id IS NOT NULL) as contacts,
+                   ARRAY_AGG(ce.contact_id) FILTER (WHERE ce.contact_id IS NOT NULL) as contact_ids
             FROM events e
             LEFT JOIN contact_events ce ON e.event_id = ce.event_id
             LEFT JOIN contacts c ON ce.contact_id = c.contact_id
@@ -52,7 +53,8 @@ router.get('/', async (req, res) => {
                                'last_name', c.last_name
                            )
                        END
-                   ) FILTER (WHERE c.contact_id IS NOT NULL) as contacts
+                   ) FILTER (WHERE c.contact_id IS NOT NULL) as contacts,
+                   ARRAY_AGG(ce.contact_id) FILTER (WHERE ce.contact_id IS NOT NULL) as contact_ids
             FROM events e
             LEFT JOIN contact_events ce ON e.event_id = ce.event_id
             LEFT JOIN contacts c ON ce.contact_id = c.contact_id
