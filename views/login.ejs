@@ -1,0 +1,181 @@
+<%- include('partials/header', {pageTitle: 'Login - Cal-Endure to the End'}) %>
+<body class="login-page">
+    <%- include('partials/navbar') %>
+
+    <div class="login-container">
+        <!-- Error/Success Messages -->
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="alert alert-error">
+                <%= error %>
+            </div>
+        <% } %>
+        <% if (typeof success !== 'undefined' && success) { %>
+            <div class="alert alert-success">
+                <%= success %>
+            </div>
+        <% } %>
+
+        <div class="login-box">
+            <!-- Login Form -->
+            <div id="login-form-container" class="form-container active">
+                <h2>Welcome Back</h2>
+                <p class="form-subtitle">Sign in to continue your journey</p>
+
+                <form action="/login" method="POST" class="auth-form">
+                    <div class="form-group">
+                        <label for="login-email">Email Address</label>
+                        <input type="email" id="login-email" name="email" placeholder="elder.smith@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" name="password" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="form-group-row">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="remember">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-link">Forgot password?</a>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full">Sign In</button>
+                </form>
+
+                <p class="form-toggle">
+                    Don't have an account?
+                    <a href="#signup" onclick="showSignupForm()">Create one now</a>
+                </p>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form-container" class="form-container">
+                <h2>Join Cal-Endure</h2>
+                <p class="form-subtitle">Start planning your day like a missionary</p>
+
+                <form action="/signup" method="POST" class="auth-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="signup-firstname">First Name</label>
+                            <input type="text" id="signup-firstname" name="firstName" placeholder="John" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-lastname">Last Name</label>
+                            <input type="text" id="signup-lastname" name="lastName" placeholder="Smith" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <input type="email" id="signup-email" name="email" placeholder="elder.smith@email.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-username">Username</label>
+                        <input type="text" id="signup-username" name="username" placeholder="eldersmith" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="signup-password">Password</label>
+                            <input type="password" id="signup-password" name="password" placeholder="••••••••" minlength="6" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="signup-confirm">Confirm Password</label>
+                            <input type="password" id="signup-confirm" name="confirmPassword" placeholder="••••••••" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="signup-mission">Mission (Optional)</label>
+                        <input type="text" id="signup-mission" name="mission" placeholder="California San Diego Mission">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="checkbox-container">
+                            <input type="checkbox" required>
+                            <span>I agree to the Terms of Service and Privacy Policy</span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full">Create Account</button>
+                </form>
+
+                <p class="form-toggle">
+                    Already have an account?
+                    <a href="#login" onclick="showLoginForm()">Sign in here</a>
+                </p>
+            </div>
+
+            <!-- Side Panel -->
+            <div class="login-side-panel">
+                <h3>Why Cal-Endure?</h3>
+                <ul class="benefits-list">
+                    <li>
+                        <span class="benefit-icon">📅</span>
+                        <div>
+                            <strong>PMG-Style Planning</strong>
+                            <p>Plan every hour like you did on your mission</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="benefit-icon">🎯</span>
+                        <div>
+                            <strong>Goal Tracking</strong>
+                            <p>Track progress across 5 life categories</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="benefit-icon">👥</span>
+                        <div>
+                            <strong>Manage Contacts</strong>
+                            <p>Keep track of everyone in your network</p>
+                        </div>
+                    </li>
+                    <li>
+                        <span class="benefit-icon">✝️</span>
+                        <div>
+                            <strong>Stay Disciplined</strong>
+                            <p>Continue your mission work ethic</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if URL has #signup hash
+        if (window.location.hash === '#signup') {
+            showSignupForm();
+        }
+
+        function showLoginForm() {
+            document.getElementById('login-form-container').classList.add('active');
+            document.getElementById('signup-form-container').classList.remove('active');
+            window.location.hash = 'login';
+        }
+
+        function showSignupForm() {
+            document.getElementById('signup-form-container').classList.add('active');
+            document.getElementById('login-form-container').classList.remove('active');
+            window.location.hash = 'signup';
+        }
+
+        // Password confirmation validation
+        document.getElementById('signup-confirm')?.addEventListener('input', function() {
+            const password = document.getElementById('signup-password').value;
+            const confirm = this.value;
+
+            if (password !== confirm) {
+                this.setCustomValidity('Passwords do not match');
+            } else {
+                this.setCustomValidity('');
+            }
+        });
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

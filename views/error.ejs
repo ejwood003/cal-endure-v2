@@ -1,0 +1,17 @@
+<%- include('partials/header', {pageTitle: pageTitle || 'Error'}) %>
+<body>
+    <%- include('partials/navbar') %>
+
+    <div style="max-width: 600px; margin: 100px auto; text-align: center; padding: 20px;">
+        <h1 style="font-size: 72px; color: #990000; margin: 0;"><%= error || '500' %></h1>
+        <h2 style="color: #0d3b66; margin: 20px 0;"><%= message || 'An error occurred' %></h2>
+        <p style="color: #697268; margin: 30px 0;">We apologize for the inconvenience.</p>
+        <div style="margin-top: 40px;">
+            <a href="/dashboard" class="btn-primary" style="display: inline-block; padding: 12px 30px; background: #0d3b66; color: white; text-decoration: none; border-radius: 5px; margin: 0 10px;">Go to Dashboard</a>
+            <a href="/" class="btn-outline" style="display: inline-block; padding: 12px 30px; border: 2px solid #0d3b66; color: #0d3b66; text-decoration: none; border-radius: 5px; margin: 0 10px;">Go to Home</a>
+        </div>
+    </div>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

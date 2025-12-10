@@ -1,0 +1,48 @@
+<!-- Top Navigation -->
+<nav class="app-navbar">
+    <div class="app-nav-container">
+        <div class="app-nav-brand">
+            <h1>Cal-Endure to the End</h1>
+        </div>
+        <div class="app-nav-links">
+            <a href="/dashboard" class="nav-link <%= currentPage === 'dashboard' ? 'active' : '' %>">
+                <span class="nav-icon">🎯</span>
+                <span>Goals</span>
+            </a>
+            <a href="/calendar" class="nav-link <%= currentPage === 'calendar' ? 'active' : '' %>">
+                <span class="nav-icon">📅</span>
+                <span>Calendar</span>
+            </a>
+            <a href="/contacts" class="nav-link <%= currentPage === 'contacts' ? 'active' : '' %>">
+                <span class="nav-icon">👥</span>
+                <span>Contacts</span>
+            </a>
+        </div>
+        <div class="app-nav-user">
+            <div class="user-menu">
+                <img src="<%= typeof user !== 'undefined' && user.profile_photo ? user.profile_photo : 'https://via.placeholder.com/40' %>" alt="User" class="user-avatar">
+                <span class="user-name"><%= typeof user !== 'undefined' && user.first_name ? user.first_name + ' ' + user.last_name : 'Elder Smith' %></span>
+                <div class="user-dropdown">
+                    <a href="#" onclick="openProfileModal(); return false;">Profile</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // User dropdown toggle
+    document.querySelector('.user-menu').addEventListener('click', function(e) {
+        this.querySelector('.user-dropdown').classList.toggle('show');
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.user-menu')) {
+            document.querySelectorAll('.user-dropdown').forEach(dropdown => {
+                dropdown.classList.remove('show');
+            });
+        }
+    });
+</script>

@@ -1,0 +1,36 @@
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Cal-Endure to the End</h3>
+                <p>A calendar app for the recovering return missionary.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Features</h4>
+                <ul>
+                    <li><a href="#features">Calendar</a></li>
+                    <li><a href="#features">Contacts</a></li>
+                    <li><a href="#features">Events</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Account</h4>
+                <ul>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/login#signup">Sign Up</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Cal-Endure to the End. Created by Noah Blake, Ethan Wood, Jacob Dishman, George Summerill</p>
+        </div>
+    </div>
+</footer>
+
+<% if (typeof user !== 'undefined' && user) { %>
+    <%- include('profile-modal') %>
+<% } %>
+
+</body>
+</html>

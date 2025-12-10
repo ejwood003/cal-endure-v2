@@ -1,0 +1,193 @@
+<%- include('partials/header', {pageTitle: 'Profile - Cal-Endure to the End'}) %>
+<body class="app-page">
+    <%- include('partials/app-navbar', {currentPage: 'profile'}) %>
+
+    <!-- Main Content -->
+    <main class="app-main">
+        <div class="container" style="max-width: 800px; margin: 0 auto; padding: 40px 20px;">
+            <!-- Page Header -->
+            <header class="page-header" style="margin-bottom: 40px;">
+                <h1 class="page-title">Profile Settings</h1>
+                <p class="page-subtitle">Manage your account information</p>
+            </header>
+
+            <!-- Error/Success Messages -->
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-error" style="background: #fee; border: 1px solid #fcc; color: #c00; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <%= error %>
+                </div>
+            <% } %>
+            <% if (typeof success !== 'undefined' && success) { %>
+                <div class="alert alert-success" style="background: #efe; border: 1px solid #cfc; color: #060; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <%= success %>
+                </div>
+            <% } %>
+
+            <!-- Profile Photo Section -->
+            <div class="profile-section" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+                <h2 style="color: #0d3b66; margin-bottom: 20px; font-size: 20px;">Profile Photo</h2>
+                <div style="display: flex; align-items: center; gap: 30px;">
+                    <img src="<%= user.profile_photo || 'https://via.placeholder.com/120' %>"
+                         alt="Profile Photo"
+                         style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #0d3b66;">
+                    <div style="flex: 1;">
+                        <form action="/profile/photo" method="POST" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="profilePhoto" style="display: block; margin-bottom: 10px; color: #697268;">Choose new photo:</label>
+                                <input type="file"
+                                       id="profilePhoto"
+                                       name="profilePhoto"
+                                       accept="image/*"
+                                       required
+                                       style="margin-bottom: 15px;">
+                            </div>
+                            <button type="submit" class="btn-primary">Upload Photo</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Information Section -->
+            <div class="profile-section" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+                <h2 style="color: #0d3b66; margin-bottom: 20px; font-size: 20px;">Profile Information</h2>
+                <form action="/profile/update" method="POST">
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text"
+                                   id="firstName"
+                                   name="firstName"
+                                   value="<%= user.first_name %>"
+                                   required
+                                   class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text"
+                                   id="lastName"
+                                   name="lastName"
+                                   value="<%= user.last_name %>"
+                                   required
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="email">Email Address</label>
+                        <input type="email"
+                               id="email"
+                               name="email"
+                               value="<%= user.email %>"
+                               required
+                               class="form-control">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="username">Username</label>
+                        <input type="text"
+                               id="username"
+                               name="username"
+                               value="<%= user.username %>"
+                               required
+                               class="form-control">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="mission">Mission (Optional)</label>
+                        <input type="text"
+                               id="mission"
+                               name="mission"
+                               value="<%= user.mission || '' %>"
+                               placeholder="e.g., California San Diego Mission"
+                               class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn-primary">Update Profile</button>
+                </form>
+            </div>
+
+            <!-- Change Password Section -->
+            <div class="profile-section" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 30px;">
+                <h2 style="color: #0d3b66; margin-bottom: 20px; font-size: 20px;">Change Password</h2>
+                <form action="/profile/password" method="POST" onsubmit="return validatePasswordChange()">
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="currentPassword">Current Password</label>
+                        <input type="password"
+                               id="currentPassword"
+                               name="currentPassword"
+                               required
+                               minlength="6"
+                               class="form-control">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="newPassword">New Password</label>
+                        <input type="password"
+                               id="newPassword"
+                               name="newPassword"
+                               required
+                               minlength="6"
+                               class="form-control">
+                        <small style="color: #697268; display: block; margin-top: 5px;">Minimum 6 characters</small>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="confirmPassword">Confirm New Password</label>
+                        <input type="password"
+                               id="confirmPassword"
+                               name="confirmPassword"
+                               required
+                               minlength="6"
+                               class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn-primary">Change Password</button>
+                </form>
+            </div>
+
+            <!-- Account Actions -->
+            <div class="profile-section" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h2 style="color: #990000; margin-bottom: 20px; font-size: 20px;">Danger Zone</h2>
+                <p style="color: #697268; margin-bottom: 15px;">Once you delete your account, there is no going back. Please be certain.</p>
+                <button onclick="confirmDeleteAccount()" class="btn-danger" style="background: #990000; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; font-weight: 500;">
+                    Delete Account
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function validatePasswordChange() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('New passwords do not match!');
+                return false;
+            }
+
+            if (newPassword.length < 6) {
+                alert('Password must be at least 6 characters long!');
+                return false;
+            }
+
+            return true;
+        }
+
+        function confirmDeleteAccount() {
+            if (confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
+                if (confirm('This will permanently delete all your goals, events, and contacts. Continue?')) {
+                    // Create and submit a form to delete account
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = '/profile/delete';
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            }
+        }
+    </script>
+
+    <%- include('partials/footer') %>
+</body>
+</html>
