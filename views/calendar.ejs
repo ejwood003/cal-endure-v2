@@ -610,7 +610,10 @@
             document.getElementById('panel-title').textContent = 'Add New Event';
             document.getElementById('event-form').reset();
             document.getElementById('event-date').value = formatDate(currentDate);
-            document.getElementById('event-goal').value = '';
+            const goalSelect = document.getElementById('event-goal');
+            if (goalSelect) {
+                goalSelect.value = '';
+            }
             document.getElementById('event-status').value = 'pending';
             const contactsSelect = document.getElementById('event-contacts');
             if (contactsSelect) {
