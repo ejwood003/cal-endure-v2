@@ -161,7 +161,7 @@
                         <% if (typeof goals !== 'undefined') { %>
                         <div class="form-group">
                             <label for="event-goal">Link to Goal (optional)</label>
-                            <select id="event-goal" name="goalId">
+                            <select id="event-goal" name="goalId" style="display: none;">
                                 <option value="">None</option>
                                 <% if (goals && goals.length > 0) { %>
                                     <% goals.filter(g => g.goal_type === 'calendar').forEach(function(goal) { %>
