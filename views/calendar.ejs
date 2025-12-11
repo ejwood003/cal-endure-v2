@@ -624,6 +624,14 @@
             document.getElementById('panel-title').textContent = 'Add New Event';
             document.getElementById('event-form').reset();
             document.getElementById('event-date').value = formatDate(currentDate);
+            document.getElementById('event-goal').value = '';
+            document.getElementById('event-status').value = 'pending';
+            const contactsSelect = document.getElementById('event-contacts');
+            if (contactsSelect) {
+                Array.from(contactsSelect.options).forEach(option => {
+                    option.selected = false;
+                });
+            }
             document.getElementById('delete-btn').style.display = 'none';
             document.getElementById('event-panel').classList.add('open');
         }
@@ -650,6 +658,17 @@
             document.getElementById('event-notes').value = event.notes || '';
             document.getElementById('event-color').value = event.color || '#0d3b66';
             document.getElementById('event-status').value = event.status || 'pending';
+            const goalSelect = document.getElementById('event-goal');
+            if (goalSelect) {
+                goalSelect.value = event.goal_id || '';
+            }
+            const contactsSelect = document.getElementById('event-contacts');
+            if (contactsSelect) {
+                const selectedContacts = Array.isArray(event.contact_ids) ? event.contact_ids.map(String) : [];
+                Array.from(contactsSelect.options).forEach(option => {
+                    option.selected = selectedContacts.includes(option.value);
+                });
+            }
             document.getElementById('delete-btn').style.display = 'block';
             document.getElementById('event-panel').classList.add('open');
         }

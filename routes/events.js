@@ -6,6 +6,31 @@ const { requireAuth } = require('../middleware/auth');
 // All event routes require authentication
 router.use(requireAuth);
 
+// Helper to update calendar goal completion status
+const updateCalendarGoalProgress = async (goalId) => {
+    if (!goalId) return;
+
+    const goal = await db('goals')
+        .where({ goal_id: goalId, goal_type: 'calendar' })
+        .first();
+
+    if (!goal) return;
+
+    const completedEvents = await db('events')
+        .where({ goal_id: goalId, status: 'completed' })
+        .count('* as count')
+        .first();
+
+    const completed = parseInt(completedEvents.count, 10) || 0;
+    const required = goal.linked_events_required || 0;
+
+    await db('goals')
+        .where({ goal_id: goalId })
+        .update({
+            is_completed: required > 0 && completed >= required
+        });
+};
+
 // Calendar main page
 router.get('/', async (req, res) => {
     try {
@@ -107,6 +132,8 @@ router.post('/create', async (req, res) => {
     const userId = req.session.user.user_id;
 
     try {
+        const status = req.body.status || 'pending';
+
         // Insert event
         const [event] = await db('events')
             .insert({
@@ -120,7 +147,7 @@ router.post('/create', async (req, res) => {
                 location,
                 notes,
                 color: req.body.color || '#0d3b66',
-                status: 'pending'
+                status
             })
             .returning('event_id');
 
@@ -137,6 +164,10 @@ router.post('/create', async (req, res) => {
                     });
                 }
             }
+        }
+
+        if (goalId && status === 'completed') {
+            await updateCalendarGoalProgress(goalId);
         }
 
         req.session.success = 'Event created successfully';
@@ -195,28 +226,8 @@ router.post('/:id/status', async (req, res) => {
             .where({ event_id: id, user_id: userId })
             .update({ status });
 
-        // If event is linked to a calendar goal, update goal progress
         if (event.goal_id) {
-            const goal = await db('goals')
-                .where({ goal_id: event.goal_id, goal_type: 'calendar' })
-                .first();
-
-            if (goal) {
-                const completedEvents = await db('events')
-                    .where({ goal_id: goal.goal_id, status: 'completed' })
-                    .count('* as count')
-                    .first();
-
-                const completed = parseInt(completedEvents.count);
-                const required = goal.linked_events_required || 0;
-
-                // Update goal completion status
-                await db('goals')
-                    .where({ goal_id: goal.goal_id })
-                    .update({
-                        is_completed: completed >= required && required > 0
-                    });
-            }
+            await updateCalendarGoalProgress(event.goal_id);
         }
 
         res.json({ success: true, status });
@@ -237,6 +248,17 @@ router.post('/update/:id', async (req, res) => {
     const userId = req.session.user.user_id;
 
     try {
+        const existingEvent = await db('events')
+            .where({ event_id: id, user_id: userId })
+            .first();
+
+        if (!existingEvent) {
+            req.session.error = 'Event not found';
+            return res.redirect('/calendar');
+        }
+
+        const newStatus = req.body.status || 'pending';
+
         // Update event
         await db('events')
             .where({ event_id: id, user_id: userId })
@@ -250,7 +272,7 @@ router.post('/update/:id', async (req, res) => {
                 location,
                 notes,
                 color: req.body.color || '#0d3b66',
-                status: req.body.status || 'pending'
+                status: newStatus
             });
 
         // Delete existing contact associations
@@ -268,6 +290,11 @@ router.post('/update/:id', async (req, res) => {
                 }
             }
         }
+
+        const goalsToUpdate = new Set();
+        if (existingEvent.goal_id) goalsToUpdate.add(existingEvent.goal_id);
+        if (goalId) goalsToUpdate.add(goalId);
+        await Promise.all(Array.from(goalsToUpdate).map(updateCalendarGoalProgress));
 
         req.session.success = 'Event updated successfully';
         res.redirect('/calendar');
